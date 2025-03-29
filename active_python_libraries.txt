@@ -20,6 +20,7 @@ httpx                     0.28.1                   pypi_0    pypi
 huggingface-hub           0.29.3                   pypi_0    pypi
 humanfriendly             10.0                     pypi_0    pypi
 idna                      3.10                     pypi_0    pypi
+keyboard                  0.13.5                   pypi_0    pypi
 libexpat                  2.6.4                he0c23c2_0    conda-forge
 libffi                    3.4.6                h537db12_0    conda-forge
 liblzma                   5.6.4                h2466b09_0    conda-forge
