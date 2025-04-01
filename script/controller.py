@@ -56,7 +56,6 @@ class Controller:
         if self.current_question_index == len(self.questions):
             lower_bound : int = len(self.profiles) * self.category_treshold
             new_generated_question = self.ai2.generate_new_question(self.profiles,
-                                                                    self.category_question_counter, 
                                                                     self.questions[lower_bound:lower_bound+self.category_question_counter],
                                                                     self.answers_txt[lower_bound:lower_bound+self.category_question_counter]) # only 
 
