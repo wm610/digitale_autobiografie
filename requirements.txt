@@ -3,4 +3,5 @@ ollama
 sounddevice
 scipy
 keyboard
-RPi.GPIO
+# RPi.GPIO
+gpiozero
