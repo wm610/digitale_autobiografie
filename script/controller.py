@@ -16,8 +16,11 @@ class Controller:
 
         self.ui = ErzaehlomatUI(tk.Tk())
         self.speach_processing = SpeachProcessing()
+        self.logger.info(f"Start loading first AI")
         self.ai1 = Ai() # for summarising start questions to a profile
+        self.logger.info(f"Start loading second AI")
         self.ai2 = Ai() # for generating new questions
+        self.logger.info(f"Start loading third AI")
         self.ai3 = Ai() # maybe not here needed here
         self.raspberry = Raspberry()
 
