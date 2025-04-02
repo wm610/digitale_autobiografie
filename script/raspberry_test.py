@@ -21,12 +21,12 @@ class Raspberry:
         self.line_power_off = self.chip.get_line(self.button_power_off)
         self.line_speak = self.chip.get_line(self.button_speak)
 
-        self.line_start_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_stop_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_previous_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_next_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_power_off.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_speak.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_start_recording.request(consumer="Button",    type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_DOWN)
+        self.line_stop_recording.request(consumer="Button",     type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_DOWN)
+        self.line_previous_question.request(consumer="Button",  type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_DOWN)
+        self.line_next_question.request(consumer="Button",      type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_DOWN)
+        self.line_power_off.request(consumer="Button",          type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_DOWN)
+        self.line_speak.request(consumer="Button",              type=gpiod.LINE_REQ_DIR_IN, flags=gpiod.LINE_REQ_FLAG_BIAS_PULL_DOWN)
 
         self.record_runs = False
         self.next_question = False
