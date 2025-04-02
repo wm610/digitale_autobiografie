@@ -6,26 +6,26 @@ class Raspberry:
     def __init__(self):
         self.logger = setup.get_logger()
 
-        self.button_power_off = 5
-        self.button_next_question = 6
+        self.button_start_recording = 26
+        self.button_stop_recording = 19
         self.button_previous_question = 13
-        self.button_stop_recording = 26
-        self.button_start_recording = 29
+        self.button_next_question = 6
+        self.button_power_off = 5
         self.button_speak = 12
 
         self.chip = gpiod.Chip('gpiochip4')
-        self.line_power_off = self.chip.get_line(self.button_power_off)
-        self.line_next_question = self.chip.get_line(self.button_next_question)
-        self.line_previous_question = self.chip.get_line(self.button_previous_question)
-        self.line_stop_recording = self.chip.get_line(self.button_stop_recording)
         self.line_start_recording = self.chip.get_line(self.button_start_recording)
+        self.line_stop_recording = self.chip.get_line(self.button_stop_recording)
+        self.line_previous_question = self.chip.get_line(self.button_previous_question)
+        self.line_next_question = self.chip.get_line(self.button_next_question)
         self.line_speak = self.chip.get_line(self.button_speak)
+        self.line_power_off = self.chip.get_line(self.button_power_off)
 
-        self.line_power_off.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_next_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_previous_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_stop_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
         self.line_start_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_stop_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_previous_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_next_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_power_off.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
         self.line_speak.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
 
         self.record_runs = False
@@ -35,14 +35,14 @@ class Raspberry:
         self.speak = False
 
     def update_button_states(self):
-        state_power_off = self.line_power_off.get_value()
-        state_next_question = self.line_next_question.get_value()
-        state_previous_question = self.line_previous_question.get_value()
-        state_stop_recording = self.line_stop_recording.get_value()
         state_start_recording = self.line_start_recording.get_value()
+        state_stop_recording = self.line_stop_recording.get_value()
+        state_previous_question = self.line_previous_question.get_value()
+        state_next_question = self.line_next_question.get_value()
         state_speak = self.line_speak.get_value()
+        state_power_off = self.line_power_off.get_value()
 
-        self.logger.info(f"po={state_power_off}, nq={state_next_question}, pq={state_previous_question}, sta={state_start_recording}, sto={state_stop_recording}, sp={state_speak}")
+        self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pq={state_previous_question}, nq={state_next_question}, sp={state_speak}, po={state_power_off}")
         # if state_power_off == 1: 
         #     self.logger.info("button_power_off")
         #     self.power_off = True
