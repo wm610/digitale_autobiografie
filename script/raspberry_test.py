@@ -42,7 +42,7 @@ class Raspberry:
         state_start_recording = self.line_start_recording.get_value()
         state_speak = self.line_speak.get_value()
 
-        self.logger(f"po={state_power_off}, nq={state_next_question}, pq={state_previous_question}, sta={state_start_recording}, sto={state_stop_recording}, sp={state_speak}")
+        self.logger.info(f"po={state_power_off}, nq={state_next_question}, pq={state_previous_question}, sta={state_start_recording}, sto={state_stop_recording}, sp={state_speak}")
         # if state_power_off == 1: 
         #     self.logger.info("button_power_off")
         #     self.power_off = True
