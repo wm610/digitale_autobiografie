@@ -28,7 +28,7 @@ class SpeachProcessing:
         take in audio data path, create transcription and return textfile path 
         """
         self.textfiles_path.mkdir(exist_ok=True)
-        textfilename = self.textfiles_path / {current_question_index}_{current_category}.txt"
+        textfilename = self.textfiles_path / f"{current_question_index}_{current_category}.txt"
         segments = self.model.transcribe(filepath_wav, beam_size=5, vad_filter=True)
         with open(textfilename, 'w', encoding='utf-8') as file:
             for segment in segments:
