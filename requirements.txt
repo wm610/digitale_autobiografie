@@ -1,7 +1,5 @@
-# include some systempackages from Raspberry Pi 5
-# faster-whisper
+# include all systempackages from Raspberry Pi OS in your virtual environment 
+faster-whisper
 ollama
-# sounddevice
-# scipy # needed?
-# gpiozero # needed?
-# gpiod
+sounddevice
+scipy
