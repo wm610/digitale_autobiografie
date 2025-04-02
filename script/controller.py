@@ -13,7 +13,8 @@ class Controller:
         self.categories=["Base","Childhood/Family","Family","Job","Travel","Values"]
         
         self.logger = setup.get_logger()
-
+        
+        self.logger.info(f"Start loading UI")
         self.ui = ErzaehlomatUI(tk.Tk())
         self.speach_processing = SpeachProcessing()
         self.logger.info(f"Start loading first AI")

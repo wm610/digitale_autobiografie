@@ -1,9 +1,10 @@
 import tkinter as tk
+import time
 
 class ErzaehlomatUI:
     def __init__(self, root):
         self.root = root
-        self.root.attributes('-fullscreen', True)  # Vollbild
+        self.root.attributes('-fullscreen', False)  # Vollbild
         self.root.configure(bg='beige')  # Hintergrundfarbe Weiß
 
         # Rahmen für Start und Stopp
@@ -136,3 +137,25 @@ class ErzaehlomatUI:
         :type new_question: str"
         """
         self.question_label.config(text=new_question)
+        self.root.update()
+
+
+def main():
+    root = tk.Tk()
+    # ui = ErzaehlomatUI(root)
+
+    from ui2 import ErzaehlomatUI
+    ui = ErzaehlomatUI(root)
+    
+    # Update questions sequentially with delays
+    ui.update_question("Was war Ihr schönstes Erlebnis?")
+    time.sleep(2)
+    ui.update_question("Was war Ihr nächst schöneres Erlebnis?")
+    time.sleep(2)
+    ui.update_question("Wie alt sind Sie?")
+    time.sleep(2)
+    
+    # root.mainloop()
+
+if __name__ == "__main__":
+    main()
