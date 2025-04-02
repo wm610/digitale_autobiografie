@@ -1,0 +1,6 @@
+faster-whisper
+ollama
+sounddevice
+scipy
+keyboard
+RPi.GPIO
