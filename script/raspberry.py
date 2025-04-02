@@ -1,7 +1,9 @@
 import RPi.GPIO as GPIO
+import setup
 
 class Raspberry:
     def __init__(self):
+        self.logger = setup.get_logger
         GPIO.setmode(GPIO.BCM) # GPIO Mode: BCM refers to GPIO numbering, BOARD refers to pin numbering
 
         button_start_recording = 17
@@ -32,21 +34,30 @@ class Raspberry:
         self.power_off = False
     
     def callback_start_recording(self, channel):
+        self.logger.info("button_start_recording")
         self.record_runs = True
     def callback_stop_recording(self, channel):
+        self.logger.info("button_stop_recording")
         self.record_runs = False
     def callback_next_question(self, channel):
+        self.logger.info("button_next_question")
         self.next_question = True
     def callback_previous_question(self, channel):
+        self.logger.info("button_previous_question")
         self.previous_question = True
     def callback_power_off(self, channel):
+        self.logger.info("button_power_off")
         self.power_off = True
 
     def should_record_run(self) -> bool:
         return self.record_runs
     def was_next_question_pressed(self) -> bool:
-        return self.next_question
+        result = self.next_question
+        self.next_question = False
+        return result
     def was_previous_question_pressed(self) -> bool:
-        return self.previous_question
+        result = self.previous_question
+        self.previous_question = False
+        return result
     def is_power_button_on(self) -> bool:
         return self.power_off

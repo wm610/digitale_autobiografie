@@ -4,9 +4,12 @@ from ai import Ai
 from ui import ErzaehlomatUI 
 from pathlib import Path
 import tkinter as tk
+import setup
 
 class Controller:
     def __init__(self):
+        logger = setup.get_logger()
+
         self.ui = ErzaehlomatUI(tk.Tk())
         self.speach_processing = SpeachProcessing()
         self.ai1 = Ai() # for summarising start questions to a profile
