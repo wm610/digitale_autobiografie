@@ -40,7 +40,7 @@ class Ai:
         response = self.client.generate(model=model, prompt=prompt)
         return response.response
     
-    def generate_summary(self, questions : list[str], answers_txt : list[path]):
+    def generate_summary(self, questions : list[str], answers_txt : list[Path]):
         """
             questions: List of questions (strings).
             answers_txt: List of Paths to answer files.
