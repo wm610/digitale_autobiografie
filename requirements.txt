@@ -1,6 +1,6 @@
 faster-whisper
 ollama
 sounddevice
-scipy # needed?
-gpiozero # needed?
-gpiod
+# scipy # needed?
+# gpiozero # needed?
+lgpio
