@@ -54,7 +54,7 @@ class Controller:
     def stop_audio_recording(self):
         # store wav file
         filepath_wav : Path = self.speach_processing.create_wav_file(self.current_question_index,self.category[self.current_category_index])
-        filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav)
+        filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav,self.current_question_index,self.category[self.current_category_index])
         self.answers_txt.append(filepath_txt)
         self.answers_wav.append(filepath_wav)
     
