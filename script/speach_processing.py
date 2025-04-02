@@ -9,21 +9,30 @@ class SpeachProcessing:
     def __init__(self):
         self.model_size = "small"
         self.model = WhisperModel(self.model_size, device="cpu", compute_type="float32")
-        self.recording = False
-        self.audio_data = []
-        self.samplerate = 48000 #Sample rate in Hz, 44100 on Windows
+        self.current_directory = Path.cwd()
+        self.recordings_path = self.current_directory / "recordings"
+        self.textfiles_path = self.current_directory / "textfiles"
+    
+    def create_wav_file(self, audio_data, current_question_index, current_category: str) -> Path:
+        """
+        take in audio data and return its path after saving
+        """
+        audio_data_np = np.concatenate(audio_data, axis=0)
+        filename = f"{self.recordings_path}/{current_question_index}_{current_category}.wav"
+        wav.write(filename, self.samplerate, audio_data_np)
+        return filename
 
-    def create_txt_file(self, wav_file_path) -> Path:
-        segments = self.model.transcribe(wav_file_path, beam_size=5, vad_filter=True)
-        with open(Path.home, 'w', encoding='utf-8') as file:
+    def create_txt_file(self, filepath_wav, current_question_index, current_category :str) -> Path:
+        """
+        take in audio data path, create transcription and return textfile path 
+        """
+        self.textfiles_path.mkdir(exist_ok=True)
+        textfilename = f"{self.textfiles_path}/{current_question_index}_{current_category}.txt"
+        segments = self.model.transcribe(filepath_wav, beam_size=5, vad_filter=True)
+        with open(textfilename, 'w', encoding='utf-8') as file:
             for segment in segments:
                 file.write(f"{segment.text}\n")
-        
-        return Path.home()
-    
-    def create_wav_file(self) -> Path:
-        
-        return Path.home()
+        return textfilename
     
     def audio_diagnostic_info():
         """Print diagnostic information about the audio input device."""
@@ -32,4 +41,3 @@ class SpeachProcessing:
         print(f"Using audio input device: {device_info['name']}")
         print(f"Sample rate: {device_info['default_samplerate']} Hz")
         print(f"Channels: {device_info['max_input_channels']}")
-        print("Press 's' to start recording and 'e' to stop.")

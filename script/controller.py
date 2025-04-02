@@ -5,6 +5,8 @@ from ui import ErzaehlomatUI
 from pathlib import Path
 import tkinter as tk
 import setup
+import sounddevice as sd
+import numpy as np
 
 class Controller:
     def __init__(self):
@@ -34,29 +36,45 @@ class Controller:
         self.category_question_counter = 0 # counts the questions per category
         self.current_category_index = 0
         self.amout_of_categories = len(self.categories)
-        
+        self.recording = False
+        self.audio_data = []
+        self.samplerate = 48000 #Sample rate in Hz, 44100 on Windows
+        self.current_directory = Path.cwd()
+        self.recordings_path = self.current_directory / "recordings"
+        self.textfiles_path = self.current_directory / "textfiles"    
 
     def create_start_questions(self):
         return ["What is your name?", "How old are you?", "Where are you at home?"] # load questions from a file
 
+    def callback(self, indata, frames, time, status): ##had no time thinking about what this does but we need it for recording
+        if status:
+            print(status)
+        self.audio_data.append(indata.copy())
+        
     def start_audio_recording(self):
-        while self.raspberry.should_record_run():
-            if self.raspberry.was_next_question_pressed():
-                self.current_question_index += 1
-                self.update_question_in_ui()
-                break
-            elif self.raspberry.was_previous_question_pressed():
-                if self.current_question_index > 0: self.current_question_index -= 1
-                self.update_question_in_ui()
-                break        
-        self.stop_audio_recording()
+        self.audio_data = []  # Reset data
+        self.recording = True
+        self.recordings_path.mkdir(exist_ok=True)
+        with sd.InputStream(samplerate=self.samplerate, channels=1, callback=self.callback, dtype=np.int16):
+            while self.raspberry.should_record_run():
+                if self.raspberry.was_next_question_pressed():
+                    self.current_question_index += 1
+                    self.update_question_in_ui()
+                    break
+                elif self.raspberry.was_previous_question_pressed():
+                    if self.current_question_index > 0: self.current_question_index -= 1
+                    self.update_question_in_ui()
+                    break        
+        self.stop_audio_recording(self.audio_data)
     
-    def stop_audio_recording(self):
+    def stop_audio_recording(self, audio_data):
         # store wav file
-        filepath_wav : Path = self.speach_processing.create_wav_file(self.current_question_index,self.category[self.current_category_index])
-        filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav,self.current_question_index,self.category[self.current_category_index])
-        self.answers_txt.append(filepath_txt)
-        self.answers_wav.append(filepath_wav)
+        if self.recording:
+            self.recording = False
+            filepath_wav : Path = self.speach_processing.create_wav_file(audio_data, self.current_question_index,self.category[self.current_category_index])
+            filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav,self.current_question_index,self.category[self.current_category_index])
+            self.answers_txt.append(filepath_txt)
+            self.answers_wav.append(filepath_wav)
     
     def update_question_in_ui(self):
         """
