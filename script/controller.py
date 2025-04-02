@@ -24,10 +24,12 @@ class Controller:
         self.current_question_index = 0 # points on the current question
         self.done_with_start_questions = False
         self.category_question_counter = 0 # counts the questions per category
+        self.current_category_index = 0
         
         # TODO This should be in an env file
         self.category_treshold = 10 # after this amount of questions the next category is 
-        self.amout_of_categories = 6
+        self.categories=["Base","Childhood/Family","Family","Job","Travel","Values"]
+        self.amout_of_categories = len(self.categories)
 
     def create_start_questions(self):
         return [] # load questions from a file
@@ -60,7 +62,8 @@ class Controller:
             lower_bound : int = len(self.profiles) * self.category_treshold
             new_generated_question = self.ai2.generate_new_question(self.profiles,
                                                                     self.questions[lower_bound:lower_bound+self.category_question_counter],
-                                                                    self.answers_txt[lower_bound:lower_bound+self.category_question_counter]) # only 
+                                                                    self.answers_txt[lower_bound:lower_bound+self.category_question_counter],
+                                                                    self.categories[self.current_category_index]) # only 
 
             self.questions.append(new_generated_question)
             self.category_question_counter += 1
@@ -68,6 +71,7 @@ class Controller:
                 # create new summary of the current category and append to profiles
                 self.ai1.generate_summary(self.questions[lower_bound:lower_bound+self.category_treshold], self.answers_txt[lower_bound:lower_bound:lower_bound+self.category_treshold])
                 self.category_question_counter = 0
+                self.current_category_index += 1    #TODO solve bug if you move back to last category
         self.ui.update_question(self.questions[self.current_question_index]) 
 
     def execute_next_cmd(self):        
