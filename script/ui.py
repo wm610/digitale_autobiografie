@@ -3,9 +3,13 @@ import time
 
 class ErzaehlomatUI:
     def __init__(self, root):
+        print("C")
         self.root = root
+        print("D")
         self.root.attributes('-fullscreen', False)  # Vollbild
+        print("E")
         self.root.configure(bg='beige')  # Hintergrundfarbe Weiß
+        print("F")
 
         # Rahmen für Start und Stopp
         instructions_frame_recording = tk.Frame(
@@ -14,7 +18,9 @@ class ErzaehlomatUI:
             bd=2,
             relief="groove"
         )
+        print("G")
         instructions_frame_recording.place(relx=0.2, rely=0.5, anchor="center", width=600, height=300)
+        print("H")
 
         # Rahmen für Beenden
         instructions_frame_quit = tk.Frame(
@@ -113,7 +119,9 @@ class ErzaehlomatUI:
             wraplength=500
         )
         # Escape-Taste zum Beenden
+        print("I")
         root.bind('<Escape>', lambda e: root.destroy())
+        print("J")
     
     def show_frame(self, frame):
         """
@@ -137,23 +145,30 @@ class ErzaehlomatUI:
         :type new_question: str"
         """
         self.question_label.config(text=new_question)
+        print("L")
         self.root.update()
+        print("M")
 
 
 def main():
+    print("A")
     root = tk.Tk()
-    # ui = ErzaehlomatUI(root)
-
-    from ui2 import ErzaehlomatUI
+    print("B")
     ui = ErzaehlomatUI(root)
+
+    # from ui2 import ErzaehlomatUI
+    # ui = ErzaehlomatUI(root)
     
     # Update questions sequentially with delays
+    print("K")
     ui.update_question("Was war Ihr schönstes Erlebnis?")
+    print("N")
     time.sleep(2)
     ui.update_question("Was war Ihr nächst schöneres Erlebnis?")
     time.sleep(2)
     ui.update_question("Wie alt sind Sie?")
     time.sleep(2)
+    print("Z")
     
     # root.mainloop()
 
