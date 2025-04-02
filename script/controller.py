@@ -75,7 +75,9 @@ class Controller:
         self.ui.update_question(self.questions[self.current_question_index]) 
 
     def execute_next_cmd(self):        
-        # update the question only if next and previous question button were pressed
+        self.raspberry.update_button_states()
+
+        # update the question only if next or previous question button were pressed
         if self.raspberry.was_next_question_pressed():
             self.current_question_index += 1
             self.update_question_in_ui()
@@ -98,6 +100,7 @@ class Controller:
 
         while self.raspberry.is_power_button_on():
             self.execute_next_cmd()
+        self.raspberry.release()
 
         self.ui.update_question("Thank you for your time. See you next time.")
 

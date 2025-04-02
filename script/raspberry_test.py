@@ -42,25 +42,19 @@ class Raspberry:
         state_power_off = self.line_power_off.get_value()
         state_speak = self.line_speak.get_value()
 
-        self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pq={state_previous_question}, nq={state_next_question}, po={state_power_off}, sp={state_speak}")
-        # if state_power_off == 1: 
-        #     self.logger.info("button_power_off")
-        #     self.power_off = True
-        # if state_next_question == 1:
-        #     self.logger.info("button_next_question")
-        #     self.next_question = True
-        # if state_previous_question == 1:
-        #     self.logger.info("button_previous_question")
-        #     self.previous_question = True
-        # if state_start_recording == 1:
-        #     self.logger.info("button_start_recording")
-        #     self.record_runs = True
-        # if state_stop_recording == 1:
-        #     self.logger.info("button_stop_recording")
-        #     self.record_runs = False
-        # if state_speak == 1:
-        #     self.logger.info("button_speak")
-        #     self.speak = True
+        self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pqe={state_previous_question}, nqe={state_next_question}, pof={state_power_off}, spe={state_speak}")
+        if state_start_recording == 1:
+            self.record_runs = True
+        if state_stop_recording == 1:
+            self.record_runs = False
+        if state_previous_question == 1:
+            self.previous_question = True
+        if state_next_question == 1:
+            self.next_question = True
+        if state_power_off == 1:
+            self.power_off = True
+        if state_speak == 1:
+            self.speak = True
 
 
     def should_record_run(self) -> bool:
