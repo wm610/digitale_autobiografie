@@ -54,16 +54,22 @@ class Raspberry:
 
         self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pqe={state_previous_question}, nqe={state_next_question}, pof={state_power_off}, spe={state_speak}")
         if state_start_recording == 1:
+            if self.record_runs != True: self.logger.info(f"START RECORDING pressed")
             self.record_runs = True
         if state_stop_recording == 1:
+            if self.record_runs != False: self.logger.info(f"STOP RECORDING pressed")
             self.record_runs = False
         if state_previous_question == 1:
+            if self.previous_question != True: self.logger.info(f"PREVIOUS QUESTION pressed")
             self.previous_question = True
         if state_next_question == 1:
+            if self.next_question != True: self.logger.info(f"NEXT QUESTION pressed")
             self.next_question = True
         if state_power_off == 1:
+            if self.power_off != True: self.logger.info(f"POWER OFF pressed")
             self.power_off = True
         if state_speak == 1:
+            if self.speak != True: self.logger.info(f"READ QUESTION pressed")
             self.speak = True
 
 
