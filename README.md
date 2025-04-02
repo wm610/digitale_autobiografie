@@ -19,4 +19,4 @@ execute: sudo raspi-config -> Advanced Options -> switch from Wayland to X11
 
 ### AI
 ollama create generate_question -f ./ollama/generate_question/models/Modelfile
-ollama create profile -f ./ollama/generate_question/models/Modelfile
+ollama create profile -f ./ollama/profile/models/Modelfile

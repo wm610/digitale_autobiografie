@@ -1,10 +1,11 @@
 from pathlib import Path
 import ollama
-
+import setup
 
 class Ai:
     def __init__(self):
         self.client = ollama.Client() #TODO still dont know where its best to call it
+        self.logger = setup.get_logger()
 
     def generate_new_question(self, profiles : list[Path], asked_questions : list[str], answers_for_this_category : list[Path], current_category : str):
         """
@@ -37,6 +38,7 @@ class Ai:
 
         # Send prompt to model
         model = "generate_question"
+        self.logger.info(f"Start generating new question")
         response = self.client.generate(model=model, prompt=prompt)
         return response.response
     
@@ -56,5 +58,6 @@ class Ai:
         
         # Send prompt to model and generate response
         model = "profile"
+        self.logger.info(f"Start generating new profile")
         response = self.client.generate(model=model, prompt=combined_q_a_string)
         return response.response

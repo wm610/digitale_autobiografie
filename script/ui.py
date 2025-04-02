@@ -113,9 +113,7 @@ class ErzaehlomatUI:
             wraplength=500
         )
         # Escape-Taste zum Beenden
-        print("I")
         root.bind('<Escape>', lambda e: root.destroy())
-        print("J")
     
     def show_frame(self, frame):
         """
