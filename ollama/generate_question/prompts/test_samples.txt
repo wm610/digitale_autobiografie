@@ -1,0 +1,44 @@
+Input:
+Name: Helene Fischer, Geburtsdatum: 5. März 1955, Geburtsort: Bremen, Wohnort: Verbrachte Kindheit in Bremen, zog nach der Hochzeit nach Düsseldorf.
+Kindheit: Wuchs in einer musikalischen Familie auf, lernte früh Klavier spielen, war in ihrer Jugend Teil eines Chors, was ihre Leidenschaft für Musik verstärkte.
+###Beruf###
+Wie hast du dich für deinen Beruf entschieden? Welche Herausforderungen hast du in deinem Berufsleben erlebt? Welche Veränderungen hast du in deinem Berufsfeld über die Jahre beobachtet? Gab es einen Mentor oder eine Person, die dich besonders inspiriert hat? Hast du irgendwann über einen Berufswechsel nachgedacht? Was hat dir an deiner Arbeit besonders gefallen?
+###
+Ein Mentor für mich war mein erster Chef, der mir beibrachte, wie wichtig Geduld und Präzision in meinem Beruf als Goldschmiedin sind.
+Ich habe nie über einen Berufswechsel nachgedacht, weil ich meinen Beruf immer als Berufung empfunden habe.
+Was mir besonders gefallen hat, war die Möglichkeit, mit meinen Händen etwas zu erschaffen, das Menschen ein Leben lang begleitet.
+
+Output V1: Wie hat sich die Wahrnehmung von Handwerk und Kreativität in Ihrem Berufsleben verändert, und wie hat sich Ihre eigene Herangehensweise an Ihre Arbeit dadurch entwickelt?
+
+V2:
+Wie hat sich deine Wahrnehmung von deiner Berufung im Laufe der Zeit verändert?
+Wie hat sich diese „Berufung“ im Laufe der Zeit manifestiert?
+Wie hat sich die Beziehung zu deinen Händen im Laufe der Zeit verändert?
+Welche Rolle spielt die Musik heute in deinem Leben?
+Wenn du zurücklegen könntest, was würdest du anders machen?
+Gibt es eine bestimmte Jahreszeit, die du besonders mit deinem Handwerk verbindest?
+Wenn du deine Arbeit bewerten würdest, wie schätzt du sie ein?
+Gibt es ein bestimmtes Objekt, das du besonders gerne geschaffen hast?
+Wenn du deine Arbeit einem Kind erklären würdest, was hättest du gesagt?
+
+
+Name: Wilhelm Berger, Geburtsdatum: 21. April 1942, Geburtsort: Nürnberg, Wohnort: Wuchs in Nürnberg auf, zog später nach Hamburg, um dort zu arbeiten.
+Kindheit: Wuchs mit vier Geschwistern auf, half oft im Familienbetrieb, einem kleinen Bäckerladen, wodurch er früh Verantwortung lernte.
+###Reisen###
+Welche Orte hast du in deinem Leben bereist? Gab es eine Reise, die dich besonders geprägt hat? Was bedeutet Reisen für dich? Hast du eher beruflich oder privat Reisen unternommen? Gab es eine Reise, die anders verlief als geplant? Hast du eine bestimmte Reise, an die du besonders gerne zurückdenkst?
+###
+Ich habe sowohl beruflich als auch privat viel gereist. Besonders in den 80ern war ich oft geschäftlich in Asien unterwegs.
+Eine Reise, die anders verlief als geplant, war mein Trip nach Italien in den 70ern – mein Auto ging kaputt, und ich musste eine Woche in einem kleinen Dorf bleiben.
+Eine meiner schönsten Erinnerungen ist eine Reise mit meiner Frau nach Norwegen – die Landschaft hat uns tief beeindruckt.
+
+Output V1: Wie hat sich Ihre Beziehung zu Ihrer Frau durch die gemeinsamen Reisen beeinflusst, und welche besonderen Erlebnisse haben Sie dabei miteinander geteilt?
+
+V2:
+Welche Erinnerung an deine Reisen möchtest du uns noch erzählen?
+Welche Rolle spielte die Familie bei deinen Reisen?
+Welche Erfahrungen hast du mit deiner Frau bei deinen Reisen gemacht?
+Was hat dich an der Reise nach Norwegen besonders berührt?
+Wie hat sich diese Norwegen-Reise von anderen Reisen unterschieden?
+Welche Rolle spielte deine Frau bei deinen Reisen?
+Wie hat sich die Arbeit in der Bäckerei auf deine Reisen ausgewirkt?
+
