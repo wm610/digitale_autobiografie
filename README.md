@@ -12,3 +12,7 @@ pip install -r requirements.txt --timeout=120
 
 ### start the programm
 sudo python3 script/controller.py
+
+### UI
+change wayland to X11 inside the Raspberry Pi Software Configuration Tool
+execute: sudo raspi-config -> Advanced Options -> switch from Wayland to X11

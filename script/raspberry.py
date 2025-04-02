@@ -52,7 +52,7 @@ class Raspberry:
         state_power_off = self.line_power_off.get_value()
         state_speak = self.line_speak.get_value()
 
-        self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pqe={state_previous_question}, nqe={state_next_question}, pof={state_power_off}, spe={state_speak}")
+        # self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pqe={state_previous_question}, nqe={state_next_question}, pof={state_power_off}, spe={state_speak}")
         if state_start_recording == 1:
             if self.record_runs != True: self.logger.info(f"START RECORDING pressed")
             self.record_runs = True
