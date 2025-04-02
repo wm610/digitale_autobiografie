@@ -8,7 +8,11 @@ import setup
 
 class Controller:
     def __init__(self):
-        logger = setup.get_logger()
+        # TODO This should be in an env file
+        self.category_treshold = 10 # after this amount of questions the next category is 
+        self.categories=["Base","Childhood/Family","Family","Job","Travel","Values"]
+        
+        self.logger = setup.get_logger()
 
         self.ui = ErzaehlomatUI(tk.Tk())
         self.speach_processing = SpeachProcessing()
@@ -25,14 +29,11 @@ class Controller:
         self.done_with_start_questions = False
         self.category_question_counter = 0 # counts the questions per category
         self.current_category_index = 0
-        
-        # TODO This should be in an env file
-        self.category_treshold = 10 # after this amount of questions the next category is 
-        self.categories=["Base","Childhood/Family","Family","Job","Travel","Values"]
         self.amout_of_categories = len(self.categories)
+        
 
     def create_start_questions(self):
-        return [] # load questions from a file
+        return ["What is your name?", "How old are you?", "Where are you at home?"] # load questions from a file
 
     def start_audio_recording(self):
         while self.raspberry.should_record_run():
@@ -72,6 +73,7 @@ class Controller:
                 self.ai1.generate_summary(self.questions[lower_bound:lower_bound+self.category_treshold], self.answers_txt[lower_bound:lower_bound:lower_bound+self.category_treshold])
                 self.category_question_counter = 0
                 self.current_category_index += 1    #TODO solve bug if you move back to last category
+        self.logger.info(f"New question: {self.questions[self.current_question_index]}")
         self.ui.update_question(self.questions[self.current_question_index]) 
 
     def execute_next_cmd(self):        
@@ -98,11 +100,13 @@ class Controller:
             
         self.update_question_in_ui() # display first question
 
-        while self.raspberry.is_power_button_on():
+        while not self.raspberry.is_power_button_off():
             self.execute_next_cmd()
         self.raspberry.release()
 
-        self.ui.update_question("Thank you for your time. See you next time.")
+        see_you_msg = "Thank you for your time. See you next time."
+        self.logger.info(f"New question: {see_you_msg}")
+        self.ui.update_question(see_you_msg)
 
         # shut raspberry off
 

@@ -5,7 +5,8 @@ python3 -m venv erzaehlomat
 source ./erzaehlomat/bin/activate
 
 ### installation on Linux
-sudo apt-get install python3-rpi.gpiovi
+maybe not needed: sudo apt-get install python3-rpi.gpiovi
+curl -fsSL https://ollama.com/install.sh | sh
 pip install -r requirements.txt --timeout=120
 
 ### start the programm

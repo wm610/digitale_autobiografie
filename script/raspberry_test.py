@@ -67,7 +67,7 @@ class Raspberry:
         result = self.previous_question
         self.previous_question = False
         return result
-    def is_power_button_on(self) -> bool:
+    def is_power_button_off(self) -> bool:
         return self.power_off
     def was_speak_pressed(self) -> bool:
         result = self.speak
