@@ -20,7 +20,7 @@ class Raspberry:
         self.button_speak = 12
 
         try:
-            self.chip = gpiod.Chip('gpiochip4')
+            self.chip = gpiod.Chip('gpiochip0')
         except FileNotFoundError:
             self.logger.error("GPIO chip not found. This system may not be a Raspberry Pi.")
             self.chip = None

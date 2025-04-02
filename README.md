@@ -10,4 +10,4 @@ curl -fsSL https://ollama.com/install.sh | sh
 pip install -r requirements.txt --timeout=120
 
 ### start the programm
-python3 script/controller.py
+sudo python3 script/controller.py
