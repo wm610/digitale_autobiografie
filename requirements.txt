@@ -1,6 +1,7 @@
-faster-whisper
+# include some systempackages from Raspberry Pi 5
+# faster-whisper
 ollama
-sounddevice
+# sounddevice
 # scipy # needed?
 # gpiozero # needed?
-lgpio
+# gpiod

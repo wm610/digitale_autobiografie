@@ -2,6 +2,7 @@
 
 ### create virtual environment
 python3 -m venv erzaehlomat
+python3 -m venv --system-site-packages erzaehlomat
 source ./erzaehlomat/bin/activate
 
 ### installation on Linux

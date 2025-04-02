@@ -22,7 +22,7 @@ class Raspberry:
         try:
             self.chip = gpiod.Chip('gpiochip0')
         except FileNotFoundError:
-            self.logger.error("GPIO chip not found. This system may not be a Raspberry Pi.")
+            self.logger.error("GPIO chip not found: This system may not be a Raspberry Pi or you didn't run this file as root or you haven't installed the neccessary libraries")
             self.chip = None
             return
 
