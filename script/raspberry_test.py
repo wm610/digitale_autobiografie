@@ -1,5 +1,6 @@
 import time
 import gpiod
+import setup
 
 class Raspberry:
     def __init__(self):
