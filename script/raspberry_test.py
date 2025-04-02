@@ -6,26 +6,26 @@ class Raspberry:
     def __init__(self):
         self.logger = setup.get_logger()
 
-        self.button_power_off = 5
-        self.button_next_question = 6
+        self.button_start_recording = 26
+        self.button_stop_recording = 19
         self.button_previous_question = 13
-        self.button_stop_recording = 26
-        self.button_start_recording = 29
+        self.button_next_question = 6
+        self.button_power_off = 5
         self.button_speak = 12
 
         self.chip = gpiod.Chip('gpiochip4')
-        self.line_power_off = self.chip.get_line(self.button_power_off)
-        self.line_next_question = self.chip.get_line(self.button_next_question)
-        self.line_previous_question = self.chip.get_line(self.button_previous_question)
-        self.line_stop_recording = self.chip.get_line(self.button_stop_recording)
         self.line_start_recording = self.chip.get_line(self.button_start_recording)
+        self.line_stop_recording = self.chip.get_line(self.button_stop_recording)
+        self.line_previous_question = self.chip.get_line(self.button_previous_question)
+        self.line_next_question = self.chip.get_line(self.button_next_question)
+        self.line_power_off = self.chip.get_line(self.button_power_off)
         self.line_speak = self.chip.get_line(self.button_speak)
 
-        self.line_power_off.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_next_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_previous_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
-        self.line_stop_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
         self.line_start_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_stop_recording.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_previous_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_next_question.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
+        self.line_power_off.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
         self.line_speak.request(consumer="Button", type=gpiod.LINE_REQ_DIR_IN)
 
         self.record_runs = False
@@ -35,31 +35,32 @@ class Raspberry:
         self.speak = False
 
     def update_button_states(self):
-        state_power_off = self.line_power_off.get_value()
-        state_next_question = self.line_next_question.get_value()
-        state_previous_question = self.line_previous_question.get_value()
-        state_stop_recording = self.line_stop_recording.get_value()
         state_start_recording = self.line_start_recording.get_value()
+        state_stop_recording = self.line_stop_recording.get_value()
+        state_previous_question = self.line_previous_question.get_value()
+        state_next_question = self.line_next_question.get_value()
+        state_power_off = self.line_power_off.get_value()
         state_speak = self.line_speak.get_value()
 
-        if state_power_off == 1: 
-            self.logger.info("button_power_off")
-            self.power_off = True
-        if state_next_question == 1:
-            self.logger.info("button_next_question")
-            self.next_question = True
-        if state_previous_question == 1:
-            self.logger.info("button_previous_question")
-            self.previous_question = True
-        if state_start_recording == 1:
-            self.logger.info("button_start_recording")
-            self.record_runs = True
-        if state_stop_recording == 1:
-            self.logger.info("button_stop_recording")
-            self.record_runs = False
-        if state_speak == 1:
-            self.logger.info("button_speak")
-            self.speak = True
+        self.logger.info(f"sta={state_start_recording}, sto={state_stop_recording}, pq={state_previous_question}, nq={state_next_question}, po={state_power_off}, sp={state_speak}")
+        # if state_power_off == 1: 
+        #     self.logger.info("button_power_off")
+        #     self.power_off = True
+        # if state_next_question == 1:
+        #     self.logger.info("button_next_question")
+        #     self.next_question = True
+        # if state_previous_question == 1:
+        #     self.logger.info("button_previous_question")
+        #     self.previous_question = True
+        # if state_start_recording == 1:
+        #     self.logger.info("button_start_recording")
+        #     self.record_runs = True
+        # if state_stop_recording == 1:
+        #     self.logger.info("button_stop_recording")
+        #     self.record_runs = False
+        # if state_speak == 1:
+        #     self.logger.info("button_speak")
+        #     self.speak = True
 
 
     def should_record_run(self) -> bool:

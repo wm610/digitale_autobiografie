@@ -2,6 +2,6 @@ faster-whisper
 ollama
 sounddevice
 scipy
-keyboard
-# RPi.GPIO
+keyboard # needed?
+RPi.GPIO # needed?
 gpiozero
