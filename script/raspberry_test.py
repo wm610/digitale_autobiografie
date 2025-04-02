@@ -4,7 +4,7 @@ import setup
 
 class Raspberry:
     def __init__(self):
-        self.logger = setup.get_logger
+        self.logger = setup.get_logger()
 
         self.button_power_off = 5
         self.button_next_question = 6
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     raspberry : Raspberry = Raspberry()
 
     start_time = time.time()
-    while time.time() - start_time < 60:
+    while time.time() - start_time < 30:
         raspberry.update_button_states()
         time.sleep(0.5)
 
