@@ -20,9 +20,9 @@ class Raspberry:
         self.button_speak = 12
 
         self.button_pin_numbers = [self.button_start_recording, self.button_stop_recording, self.button_previous_question, self.button_next_question, self.button_power_off, self.button_speak]
-        number_of_buttons = len(self.button_pin_numbers)
+        self.number_of_buttons = len(self.button_pin_numbers)
 
-        pressed_buttons = [False for _ in number_of_buttons]
+        pressed_buttons = [False for _ in range(self.number_of_buttons)]
 
         try:
             self.chip = gpiod.Chip('gpiochip0')
@@ -58,10 +58,10 @@ class Raspberry:
         if self.chip == None:
             return
 
-        for i in self.number_of_buttons:
+        for i in range(self.number_of_buttons):
             self.button_states[i] = self.lines[i].get_value()
 
-        for i in self.number_of_buttons:
+        for i in range(self.number_of_buttons):
             if self.button_states[i] == 1 and not self.pressed_buttons[i]:
                 self.pressed_buttons[i] = True
             if self.button_states[i] == 0 and self.pressed_buttons[i]:
