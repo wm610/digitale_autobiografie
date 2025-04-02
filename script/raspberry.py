@@ -22,7 +22,8 @@ class Raspberry:
         self.button_pin_numbers = [self.button_start_recording, self.button_stop_recording, self.button_previous_question, self.button_next_question, self.button_power_off, self.button_speak]
         self.number_of_buttons = len(self.button_pin_numbers)
 
-        pressed_buttons = [False for _ in range(self.number_of_buttons)]
+        self.pressed_buttons = [False for _ in range(self.number_of_buttons)]
+        self.button_states = [0 for _ in range(self.number_of_buttons)]
 
         try:
             self.chip = gpiod.Chip('gpiochip0')
@@ -77,7 +78,7 @@ class Raspberry:
         # state_power_off = self.line_power_off.get_value()
         # state_speak = self.line_speak.get_value()
 
-    def update_inernal_states(self, i):
+    def update_internal_states(self, i):
         if 0 == i:
             self.logger.info(f"START RECORDING pressed")
             self.record_runs = True
