@@ -68,7 +68,7 @@ def main():
     recordings_path = current_directory / "recordings"
     textfiles_path = current_directory / "textfiles"
     recordings_path.mkdir(exist_ok=True)  # Ensure the recordings folder exists
-    recording = True
+
     # File path for the audio file
     audiofile_path = recordings_path / "test.wav"
 
@@ -76,22 +76,24 @@ def main():
     recognizer = sr.Recognizer()
     with sr.Microphone(sample_rate=48000) as mic:
         print("Recording... Press Ctrl+C to stop.")
-        # Adjust for ambient noise and record audio
-        recognizer.adjust_for_ambient_noise(mic, duration=1)
-        print("Start speaking...")
-        while recording:
-            audio_data = recognizer.listen(mic, timeout=None, phrase_time_limit=None)  # start audio record
-            if keyboard.is_pressed("e"):
-                recording=False
-        # Save the audio data to a WAV file
-        with open(audiofile_path, "wb") as audio_file:
-            audio_file.write(audio_data.get_wav_data())
-        print(f"Audio saved to: {audiofile_path}")
+        try:
+            # Adjust for ambient noise and record audio
+            recognizer.adjust_for_ambient_noise(mic, duration=1)
+            print("Start speaking...")
+            audio_data = recognizer.listen(mic,timeout=None)  # Record audio until silence or timeout
 
-        # Optionally, create a transcription
-        sp.create_txt_file(audiofile_path, 42, "current_category")
-        print("Recording stopped by user.")
+            # Save the audio data to a WAV file
+            with open(audiofile_path, "wb") as audio_file:
+                audio_file.write(audio_data.get_wav_data())
+            print(f"Audio saved to: {audiofile_path}")
 
+            # Optionally, create a transcription
+            sp.create_txt_file(audiofile_path, 42, "current_category")
+
+        except KeyboardInterrupt:
+            print("Recording stopped by user.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
