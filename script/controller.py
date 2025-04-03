@@ -137,12 +137,12 @@ class Controller:
         if self.arduino.was_next_question_pressed():
             self.current_question_index += 1
             self.update_question_in_ui()
-            self.check_question_already_recorded()
+            #self.check_question_already_recorded()
         elif self.arduino.was_previous_question_pressed():
             if self.current_question_index > 0:
                 self.current_question_index -= 1
                 self.update_question_in_ui()
-                self.check_question_already_recorded()
+                #self.check_question_already_recorded()
 
         # start the recording if the user wants to run it
         if self.arduino.should_record_run():

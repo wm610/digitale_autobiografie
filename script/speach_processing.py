@@ -15,6 +15,9 @@ import speech_recognition as sr
 from arduino import Arduino
 import setup
 
+from ui import ErzaehlomatUI
+import tkinter as tk
+
 # from pathlib import Path
 # import numpy as np
 # import scipy.io.wavfile as wav
@@ -34,6 +37,8 @@ class SpeachProcessing:
         self.current_directory = Path.cwd()
         self.recordings_path = self.current_directory / "recordings"
         self.textfiles_path = self.current_directory / "textfiles"
+
+        self.ui = ErzaehlomatUI(tk.Tk())
 
     def create_wav_file(self, current_question_index, current_category: str) -> Path:
         """
@@ -154,6 +159,7 @@ class SpeachProcessing:
         it without getting chopped off.
         """
         p = pyaudio.PyAudio()
+        self.ui.show_recording_frame()
         stream = p.open(format=self.FORMAT, channels=1, rate=self.RATE,
             input=True, output=True,
             frames_per_buffer=self.CHUNK_SIZE)
@@ -193,6 +199,7 @@ class SpeachProcessing:
         r = self.normalize(r)
         r = self.trim(r)
         r = self.add_silence(r, 0.5)
+        self.ui.show_saved_frame()
         return sample_width, r
 
 if __name__ == '__main__':
