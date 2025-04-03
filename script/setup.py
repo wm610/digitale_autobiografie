@@ -23,3 +23,14 @@ def collect_answers_into_single_string(answers_txt : list[Path]):
     all_answers = " ".join(answers_content)
 
     return all_answers
+
+def find_your_Mic_device_number():
+    import pyaudio
+
+    p = pyaudio.PyAudio()
+
+    for i in range(p.get_device_count()):
+        device_info = p.get_device_info_by_index(i)
+        print(f"Device {i}: {device_info['name']}")
+        print(f"  - Max Input Channels: {device_info['maxInputChannels']}")
+        print(f"  - Default Sample Rate: {device_info['defaultSampleRate']}")

@@ -6,6 +6,7 @@ from pathlib import Path
 import tkinter as tk
 import setup
 import time
+import threading
 # import sounddevice as sd
 # import numpy as np
 import speech_recognition as sr
@@ -22,7 +23,7 @@ class Controller:
         self.logger.info(f"Start loading UI")
         self.ui = ErzaehlomatUI(tk.Tk())
         self.logger.info(f"Start loading Speach Processing")
-        self.speach_processing = SpeachProcessing(self.arduino)
+        self.speach_processing = SpeachProcessing(self.arduino, self)
         self.logger.info(f"Start loading first AI")
         self.ai1 = Ai() # for summarising start questions to a profile
         self.logger.info(f"Start loading second AI")
@@ -66,7 +67,7 @@ class Controller:
     #         print(status)
     #     self.audio_data.append(indata.copy())
         
-    def start_audio_recording(self):
+    def audio_recording(self):
         # self.audio_data = []  # Reset data
         # self.recording = True
         self.recordings_path.mkdir(exist_ok=True)
@@ -92,7 +93,7 @@ class Controller:
     # def stop_audio_recording(self, audio_data):
         # store wav file
         # if self.recording:
-        self.recording = False
+        # self.recording = False
         self.ui.show_wait_frame()
         self.logger.info("start recording")
         filepath_wav : Path = self.speach_processing.create_wav_file(self.current_question_index,self.categories[self.current_category_index])
@@ -130,26 +131,31 @@ class Controller:
         self.check_question_already_recorded()
 
     def execute_next_cmd(self):        
-        self.arduino.update_button_states()
+        # self.arduino.update_button_states() # ???????????????????
 
         # update the question only if next or previous question button were pressed
         if self.arduino.was_next_question_pressed():
             self.current_question_index += 1
             self.update_question_in_ui()
-            self.check_question_already_recorded()
+            # self.check_question_already_recorded()
         elif self.arduino.was_previous_question_pressed():
             if self.current_question_index > 0:
                 self.current_question_index -= 1
                 self.update_question_in_ui()
-                self.check_question_already_recorded()
+                # self.check_question_already_recorded()
 
         # start the recording if the user wants to run it
         if self.arduino.should_record_run():
-            self.start_audio_recording()
+            self.audio_recording()
         
 
     def start(self):
-            
+        
+        # start here thread that updates button states consistent
+        stop_event = threading.Event()
+        thread = threading.Thread(target= self.arduino.update_button_states_thread, args=(stop_event,))
+        thread.start()
+
         self.update_question_in_ui() # display first question
 
         while not self.arduino.is_power_button_off():
@@ -158,6 +164,9 @@ class Controller:
         see_you_msg = "Thank you for your time. See you next time."
         self.logger.info(f"New question: {see_you_msg}")
         self.ui.update_question(see_you_msg)
+
+        stop_event.set()
+        thread.join()
 
         time.sleep(5)
 

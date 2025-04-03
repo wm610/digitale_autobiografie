@@ -1,37 +1,39 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from controller import Controller
+
 from sys import byteorder
 from array import array
 from struct import pack
 
-import setup
-
 import pyaudio
 import wave
-from pathlib import Path
 
-from arduino import Arduino
+from pathlib import Path
 import speech_recognition as sr
+from arduino import Arduino
+import setup
 
 # from pathlib import Path
 # import numpy as np
 # import scipy.io.wavfile as wav
 
 class SpeachProcessing:
-    def __init__(self, arduino : Arduino):
-        print("init")
+    def __init__(self, arduino : Arduino, controller : Controller):
         self.THRESHOLD = 500
         self.CHUNK_SIZE = 1024
         self.FORMAT = pyaudio.paInt16
         self.RATE = 44100 # 48000
 
         self.arduino = arduino
+        self.controller = controller
         self.recognizer = sr.Recognizer()
         self.logger = setup.get_logger()
 
         self.current_directory = Path.cwd()
         self.recordings_path = self.current_directory / "recordings"
         self.textfiles_path = self.current_directory / "textfiles"
-        print("end init")
-
 
     def create_wav_file(self, current_question_index, current_category: str) -> Path:
         """
@@ -76,30 +78,30 @@ class SpeachProcessing:
         return textfilename
 
 
-    def is_silent(self, snd_data):
-        "Returns 'True' if below the 'silent' threshold"
-        # return max(snd_data) < THRESHOLD
+    def should_stop(self, snd_data):
+        # """Returns 'True' if recording should be stopped"""
+        # self.logger.info("should_stop!!!!")
+        # # return True
+        #  self.arduino.update_button_states()
+        if not self.arduino.should_record_run():
+            return True
+        elif self.arduino.was_next_question_pressed():
+            self.controller.current_question_index += 1
+            self.controller.update_question_in_ui()
+            self.controller.check_question_already_recorded()
+            return True
+        elif self.arduino.was_previous_question_pressed():
+            if self.controller.current_question_index > 0: self.current_question_index -= 1
+            self.controller.update_question_in_ui()
+            self.controller.check_question_already_recorded()
+            return True
+        else:
+            return False
 
-        # return not self.arduino.should_record_run() or self.arduino.was_next_question_pressed() or self.arduino.was_previous_question_pressed()
-   
-        #      hile self.arduino.should_record_run():
-        #     self.arduino.update_button_states()
-        #     print("update_button_states")
-        #     try:
-        #         self.recognizer.adjust_for_ambient_noise(self.mic, duration=1)
-        #         self.audio_data = self.recognizer.listen(self.mic, timeout=10)
-        #     except self.arduino.was_next_question_pressed():
-        #         self.current_question_index += 1
-        #         self.update_question_in_ui()
-        #         self.check_question_already_recorded()
-        #     except self.arduino.was_previous_question_pressed():
-        #         if self.current_question_index > 0: self.current_question_index -= 1
-        #         self.update_question_in_ui()
-        #         self.check_question_already_recorded(
-    
-        return not self.arduino.should_record_run()
+        # "Returns 'True' if below the 'silent' threshold"
+        # return max(snd_data) < self.THRESHOLD
 
-    def normalize(snd_data):
+    def normalize(self, snd_data):
         "Average the volume out"
         MAXIMUM = 16384
         times = float(MAXIMUM)/max(abs(i) for i in snd_data)
@@ -109,7 +111,7 @@ class SpeachProcessing:
             r.append(int(i*times))
         return r
 
-    def trim(snd_data):
+    def trim(self, snd_data):
         "Trim the blank spots at the start and end"
         def _trim(snd_data):
             snd_started = False
@@ -155,6 +157,10 @@ class SpeachProcessing:
         stream = p.open(format=self.FORMAT, channels=1, rate=self.RATE,
             input=True, output=True,
             frames_per_buffer=self.CHUNK_SIZE)
+        # DEVICE_INDEX = 1  # find out your index with: "arecord -l" then use card number from the USB device 
+        # stream = p.open(format=self.FORMAT, channels=2, rate=self.RATE,
+        #     input=True, output=True, input_device_index=DEVICE_INDEX,
+        #     frames_per_buffer=self.CHUNK_SIZE)
 
         num_silent = 0
         snd_started = False
@@ -162,13 +168,14 @@ class SpeachProcessing:
         r = array('h')
 
         while 1:
+        # while not self.should_stop():
             # little endian, signed short
             snd_data = array('h', stream.read(self.CHUNK_SIZE))
             if byteorder == 'big':
                 snd_data.byteswap()
             r.extend(snd_data)
 
-            silent = self.is_silent(snd_data)
+            silent = self.should_stop(snd_data)
 
             if silent and snd_started:
                 num_silent += 1
@@ -188,19 +195,11 @@ class SpeachProcessing:
         r = self.add_silence(r, 0.5)
         return sample_width, r
 
-    # def record_to_file(path):
-    #     "Records from the microphone and outputs the resulting data to 'path'"
-    #     sample_width, data = record()
-    #     data = pack('<' + ('h'*len(data)), *data)
-
-    #     wf = wave.open(path, 'wb')
-    #     wf.setnchannels(1)
-    #     wf.setsampwidth(sample_width)
-    #     wf.setframerate(RATE)
-    #     wf.writeframes(data)
-    #     wf.close()
-
-    # if __name__ == '__main__':
-    #     print("please speak a word into the microphone")
-    #     record_to_file('demo.wav')
-    #     print("done - result written to demo.wav")
+if __name__ == '__main__':
+    from controller import Controller
+    controller = Controller()
+    arduino = Arduino()
+    speach_processing = SpeachProcessing(arduino=arduino, controller=controller)
+    print("please speak a word into the microphone")
+    file = speach_processing.create_wav_file(42, "current_category")
+    print("done recording written to: {file}")

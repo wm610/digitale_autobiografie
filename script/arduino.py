@@ -9,7 +9,7 @@ class Arduino:
         # pip install 
 
         # Configure the serial port
-        self.ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+        self.ser = serial.Serial('/dev/ttyACM0', 4800, timeout=1) # 9600
         self.ser.flush()
 
         self.logger = setup.get_logger()
@@ -24,11 +24,16 @@ class Arduino:
         self.number_of_buttons = len(self.current_button_state)
         self.pressed_buttons = [False for _ in range(self.number_of_buttons)]
 
+    def update_button_states_thread(self, stop_event):
+        while not stop_event.is_set():
+            self.update_button_states()
+        self.logger.info("Arduino Thread stopping...")
+
     def update_button_states(self):
+        self.logger.debug(f"{self.current_button_state}")
         try:
             if self.ser.in_waiting > 0:
-                self.current_button_state = self.ser.readline().decode('utf-8').rstrip()
-                self.logger.debug(f"{self.current_button_state}")
+                self.current_button_state = self.ser.read(self.ser.in_waiting).decode('utf-8').rstrip()
         except KeyboardInterrupt:
             print("\nExiting program")
             self.ser.close()

@@ -2,7 +2,7 @@ const int buttonPins[] = {2, 3, 4, 5, 6, 7};  // Connect buttons to these pins
 const int numButtons = 6;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(4800);
   for (int i = 0; i < numButtons; i++) {
     pinMode(buttonPins[i], INPUT_PULLUP);  // Use internal pull-up resistors
   }
