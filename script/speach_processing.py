@@ -2,6 +2,8 @@ from sys import byteorder
 from array import array
 from struct import pack
 
+import setup
+
 import pyaudio
 import wave
 from pathlib import Path
@@ -15,6 +17,7 @@ import speech_recognition as sr
 
 class SpeachProcessing:
     def __init__(self, arduino : Arduino):
+        print("init")
         self.THRESHOLD = 500
         self.CHUNK_SIZE = 1024
         self.FORMAT = pyaudio.paInt16
@@ -22,20 +25,22 @@ class SpeachProcessing:
 
         self.arduino = arduino
         self.recognizer = sr.Recognizer()
-
+        self.logger = setup.get_logger()
 
         self.current_directory = Path.cwd()
         self.recordings_path = self.current_directory / "recordings"
         self.textfiles_path = self.current_directory / "textfiles"
+        print("end init")
 
 
-    def create_wav_file(self, audio_data, current_question_index, current_category: str) -> Path:
+    def create_wav_file(self, current_question_index, current_category: str) -> Path:
         """
         take in audio data and return its path after saving
+        Records from the microphone and outputs the resulting data to 'path'
         """
         path = self.recordings_path / f"{current_question_index}_{current_category}.wav"
 
-        "Records from the microphone and outputs the resulting data to 'path'"
+        self.logger.info(f"created wav file: {path}")
         sample_width, data = self.record()
         data = pack('<' + ('h'*len(data)), *data)
 
@@ -74,6 +79,24 @@ class SpeachProcessing:
     def is_silent(self, snd_data):
         "Returns 'True' if below the 'silent' threshold"
         # return max(snd_data) < THRESHOLD
+
+        # return not self.arduino.should_record_run() or self.arduino.was_next_question_pressed() or self.arduino.was_previous_question_pressed()
+   
+        #      hile self.arduino.should_record_run():
+        #     self.arduino.update_button_states()
+        #     print("update_button_states")
+        #     try:
+        #         self.recognizer.adjust_for_ambient_noise(self.mic, duration=1)
+        #         self.audio_data = self.recognizer.listen(self.mic, timeout=10)
+        #     except self.arduino.was_next_question_pressed():
+        #         self.current_question_index += 1
+        #         self.update_question_in_ui()
+        #         self.check_question_already_recorded()
+        #     except self.arduino.was_previous_question_pressed():
+        #         if self.current_question_index > 0: self.current_question_index -= 1
+        #         self.update_question_in_ui()
+        #         self.check_question_already_recorded(
+    
         return not self.arduino.should_record_run()
 
     def normalize(snd_data):
@@ -128,7 +151,6 @@ class SpeachProcessing:
         blank sound to make sure VLC et al can play 
         it without getting chopped off.
         """
-        print("record")
         p = pyaudio.PyAudio()
         stream = p.open(format=self.FORMAT, channels=1, rate=self.RATE,
             input=True, output=True,

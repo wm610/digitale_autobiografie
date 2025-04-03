@@ -5,6 +5,7 @@ from ui import ErzaehlomatUI
 from pathlib import Path
 import tkinter as tk
 import setup
+import time
 # import sounddevice as sd
 # import numpy as np
 import speech_recognition as sr
@@ -20,6 +21,7 @@ class Controller:
         self.arduino = Arduino()
         self.logger.info(f"Start loading UI")
         self.ui = ErzaehlomatUI(tk.Tk())
+        self.logger.info(f"Start loading Speach Processing")
         self.speach_processing = SpeachProcessing(self.arduino)
         self.logger.info(f"Start loading first AI")
         self.ai1 = Ai() # for summarising start questions to a profile
@@ -65,35 +67,40 @@ class Controller:
     #     self.audio_data.append(indata.copy())
         
     def start_audio_recording(self):
-        self.audio_data = []  # Reset data
-        self.recording = True
+        # self.audio_data = []  # Reset data
+        # self.recording = True
         self.recordings_path.mkdir(exist_ok=True)
         self.ui.show_recording_frame()
-        with self.mic:
-            while self.arduino.should_record_run():
-                try:
-                    self.recognizer.adjust_for_ambient_noise(self.mic, duration=1)
-                    self.audio_data = self.recognizer.listen(self.mic, timeout=10)
-                except self.arduino.was_next_question_pressed():
-                    self.current_question_index += 1
-                    self.update_question_in_ui()
-                    self.check_question_already_recorded()
-                except self.arduino.was_previous_question_pressed():
-                    if self.current_question_index > 0: self.current_question_index -= 1
-                    self.update_question_in_ui()
-                    self.check_question_already_recorded()      
-        self.stop_audio_recording(self.audio_data)
+    #     with self.mic:
+    #         while self.arduino.should_record_run():
+    #             self.arduino.update_button_states()
+    #             print("update_button_states")
+    #             try:
+    #                 self.recognizer.adjust_for_ambient_noise(self.mic, duration=1)
+    #                 self.audio_data = self.recognizer.listen(self.mic, timeout=10)
+    #             except self.arduino.was_next_question_pressed():
+    #                 self.current_question_index += 1
+    #                 self.update_question_in_ui()
+    #                 self.check_question_already_recorded()
+    #             except self.arduino.was_previous_question_pressed():
+    #                 if self.current_question_index > 0: self.current_question_index -= 1
+    #                 self.update_question_in_ui()
+    #                 self.check_question_already_recorded()      
+    #     print("Stop Record")
+    #     self.stop_audio_recording(self.audio_data)
     
-    def stop_audio_recording(self, audio_data):
+    # def stop_audio_recording(self, audio_data):
         # store wav file
-        if self.recording:
-            self.recording = False
-            self.ui.show_wait_frame()
-            filepath_wav : Path = self.speach_processing.create_wav_file(audio_data, self.current_question_index,self.category[self.current_category_index])
-            filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav,self.current_question_index,self.category[self.current_category_index])
-            self.answers_txt.append(filepath_txt)
-            self.answers_wav.append(filepath_wav)
-            self.ui.show_saved_frame()
+        # if self.recording:
+        self.recording = False
+        self.ui.show_wait_frame()
+        self.logger.info("start recording")
+        filepath_wav : Path = self.speach_processing.create_wav_file(self.current_question_index,self.categories[self.current_category_index])
+        self.logger.info("stopped recording")
+        filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav,self.current_question_index,self.categories[self.current_category_index])
+        self.answers_txt.append(filepath_txt)
+        self.answers_wav.append(filepath_wav)
+        self.ui.show_saved_frame()
     
     def update_question_in_ui(self):
         """
@@ -147,14 +154,12 @@ class Controller:
 
         while not self.arduino.is_power_button_off():
             self.execute_next_cmd()
-        self.arduino.release()
 
         see_you_msg = "Thank you for your time. See you next time."
         self.logger.info(f"New question: {see_you_msg}")
         self.ui.update_question(see_you_msg)
 
-        # shut arduino off
-
+        time.sleep(5)
 
 
 if __name__ == '__main__':
