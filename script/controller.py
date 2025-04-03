@@ -1,4 +1,4 @@
-from raspberry import Raspberry 
+from arduino import Arduino 
 from speach_processing import SpeachProcessing 
 from ai import Ai
 from ui import ErzaehlomatUI 
@@ -26,7 +26,7 @@ class Controller:
         self.ai2 = Ai() # for generating new questions
         self.logger.info(f"Start loading third AI")
         self.ai3 = Ai() # maybe not here needed here
-        self.raspberry = Raspberry()
+        self.arduino = Arduino()
 
         self.questions : list[str] = self.create_start_questions()
         self.answers_txt : list[Path] = []
@@ -43,7 +43,8 @@ class Controller:
         self.current_directory = Path.cwd()
         self.recordings_path = self.current_directory / "recordings"
         self.textfiles_path = self.current_directory / "textfiles"
-        self.mic = sr.Microphone(self.samplerate)
+        # self.mic = sr.Microphone(self.samplerate) # for Martin
+        self.mic = sr.Microphone(device_index=5) # for Benno
         self.recognizer = sr.Recognizer()
 
     def create_start_questions(self):
@@ -69,15 +70,15 @@ class Controller:
         self.recordings_path.mkdir(exist_ok=True)
         self.ui.show_recording_frame()
         with self.mic:
-            while self.raspberry.should_record_run():
+            while self.arduino.should_record_run():
                 try:
                     self.recognizer.adjust_for_ambient_noise(self.mic, duration=1)
                     self.audio_data = self.recognizer.listen(self.mic, timeout=10)
-                except self.raspberry.was_next_question_pressed():
+                except self.arduino.was_next_question_pressed():
                     self.current_question_index += 1
                     self.update_question_in_ui()
                     self.check_question_already_recorded()
-                except self.raspberry.was_previous_question_pressed():
+                except self.arduino.was_previous_question_pressed():
                     if self.current_question_index > 0: self.current_question_index -= 1
                     self.update_question_in_ui()
                     self.check_question_already_recorded()      
@@ -122,21 +123,21 @@ class Controller:
         self.check_question_already_recorded()
 
     def execute_next_cmd(self):        
-        self.raspberry.update_button_states()
+        self.arduino.update_button_states()
 
         # update the question only if next or previous question button were pressed
-        if self.raspberry.was_next_question_pressed():
+        if self.arduino.was_next_question_pressed():
             self.current_question_index += 1
             self.update_question_in_ui()
             self.check_question_already_recorded()
-        elif self.raspberry.was_previous_question_pressed():
+        elif self.arduino.was_previous_question_pressed():
             if self.current_question_index > 0:
                 self.current_question_index -= 1
                 self.update_question_in_ui()
                 self.check_question_already_recorded()
 
         # start the recording if the user wants to run it
-        if self.raspberry.should_record_run():
+        if self.arduino.should_record_run():
             self.start_audio_recording()
         
 
@@ -144,15 +145,15 @@ class Controller:
             
         self.update_question_in_ui() # display first question
 
-        while not self.raspberry.is_power_button_off():
+        while not self.arduino.is_power_button_off():
             self.execute_next_cmd()
-        self.raspberry.release()
+        self.arduino.release()
 
         see_you_msg = "Thank you for your time. See you next time."
         self.logger.info(f"New question: {see_you_msg}")
         self.ui.update_question(see_you_msg)
 
-        # shut raspberry off
+        # shut arduino off
 
 
 
