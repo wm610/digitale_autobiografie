@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import scipy.io.wavfile as wav
 ###Testing
+import keyboard
 
 class SpeachProcessing:
     def __init__(self):
@@ -75,26 +76,22 @@ def main():
     recognizer = sr.Recognizer()
     with sr.Microphone(sample_rate=48000) as mic:
         print("Recording... Press Ctrl+C to stop.")
-        try:
-            # Adjust for ambient noise and record audio
-            recognizer.adjust_for_ambient_noise(mic, duration=1)
-            print("Start speaking...")
-            while recording:
-                audio_data = recognizer.listen(mic, timeout=None, phrase_time_limit=None)  # start audio record
-            # Save the audio data to a WAV file
-            with open(audiofile_path, "wb") as audio_file:
-                audio_file.write(audio_data.get_wav_data())
-            print(f"Audio saved to: {audiofile_path}")
+        # Adjust for ambient noise and record audio
+        recognizer.adjust_for_ambient_noise(mic, duration=1)
+        print("Start speaking...")
+        while recording:
+            audio_data = recognizer.listen(mic, timeout=None, phrase_time_limit=None)  # start audio record
+            if keyboard.is_pressed("e"):
+                recording=False
+        # Save the audio data to a WAV file
+        with open(audiofile_path, "wb") as audio_file:
+            audio_file.write(audio_data.get_wav_data())
+        print(f"Audio saved to: {audiofile_path}")
 
-            # Optionally, create a transcription
-            sp.create_txt_file(audiofile_path, 42, "current_category")
+        # Optionally, create a transcription
+        sp.create_txt_file(audiofile_path, 42, "current_category")
+        print("Recording stopped by user.")
 
-        except KeyboardInterrupt:
-            recording = False
-            print("Recording stopped by user.")
-        except Exception as e:
-            recording = False
-            print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
