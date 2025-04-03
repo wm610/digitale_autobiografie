@@ -75,7 +75,7 @@ class Controller:
         self.answers_wav.append(filepath_wav)
         self.ui.show_saved_frame()
     
-    def update_question_in_ui(self):
+    def update_question_in_ui(self, first_call):
         """
         generates a new question if current_question_index == len(questions)
         otherwise it displayes old questions
@@ -103,7 +103,8 @@ class Controller:
                 self.logger.info(f"new category index: {self.current_category_index}")
         self.logger.info(f"New question: {self.questions[self.current_question_index]}")
         self.ui.update_question(self.questions[self.current_question_index])
-        self.check_question_already_recorded()
+        if first_call:
+            self.check_question_already_recorded()
 
     def execute_next_cmd(self):        
         # self.arduino.update_button_states() # ???????????????????
@@ -111,12 +112,12 @@ class Controller:
         # update the question only if next or previous question button were pressed
         if self.arduino.was_next_question_pressed():
             self.current_question_index += 1
-            self.update_question_in_ui()
+            self.update_question_in_ui(True)
             #self.check_question_already_recorded()
         elif self.arduino.was_previous_question_pressed():
             if self.current_question_index > 0:
                 self.current_question_index -= 1
-                self.update_question_in_ui()
+                self.update_question_in_ui(True)
                 #self.check_question_already_recorded()
 
         # start the recording if the user wants to run it
@@ -131,7 +132,7 @@ class Controller:
         thread = threading.Thread(target= self.arduino.update_button_states_thread, args=(stop_event,))
         thread.start()
 
-        self.update_question_in_ui() # display first question
+        self.update_question_in_ui(False) # display first question
 
         while not self.arduino.is_power_button_off():
             self.execute_next_cmd()

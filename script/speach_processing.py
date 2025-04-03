@@ -92,12 +92,12 @@ class SpeachProcessing:
             return True
         elif self.arduino.was_next_question_pressed():
             self.controller.current_question_index += 1
-            self.controller.update_question_in_ui()
+            self.controller.update_question_in_ui(True)
             self.controller.check_question_already_recorded()
             return True
         elif self.arduino.was_previous_question_pressed():
             if self.controller.current_question_index > 0: self.current_question_index -= 1
-            self.controller.update_question_in_ui()
+            self.controller.update_question_in_ui(True)
             self.controller.check_question_already_recorded()
             return True
         else:
