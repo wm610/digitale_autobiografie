@@ -5,129 +5,82 @@ class ErzaehlomatUI:
     def __init__(self, root):
         self.root = root
         self.root.attributes('-fullscreen', True)  # Vollbild
-        self.root.configure(bg='beige')  # Hintergrundfarbe Weiß
+        self.root.configure(bg='beige')  # Hintergrundfarbe Beige
 
-        # Rahmen für Start und Stopp
-        instructions_frame_recording = tk.Frame(
-            root,
-            bg="white",
-            bd=2,
-            relief="groove"
-        )
-        instructions_frame_recording.place(relx=0.2, rely=0.5, anchor="center", width=600, height=300)
-
-        # Rahmen für Beenden
-        instructions_frame_quit = tk.Frame(
-            root,
-            bg="white",
-            bd=2,
-            relief="groove"
-        )
-        instructions_frame_quit.place(relx=0.5, rely=0.8, anchor="center", width=600, height=100)
-
-        # Rahmen für die Anweisungen
-        instructions_frame_move = tk.Frame(
-            root,
-            bg="white",
-            bd=2,
-            relief="groove"
-        )
-        instructions_frame_move.place(relx=0.8, rely=0.5, anchor="center", width=600, height=300)
-
-        # Frage als Label
+        # question label
         self.question_label = tk.Label(
             root,
             text="Hallo! Das ist der Erzählomat",  # Startfrage
             font=("Arial", 40),  # Große Schrift
             bg="beige",
             fg="black",
-            wraplength=800,
+            wraplength=900,
             justify="center"
         )
-        self.question_label.place(relx=0.5, rely=0.2, anchor="center")
+        self.question_label.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Anweisungen als Label
-        start_label = tk.Label(
+        # empty frame
+        self.base_label = tk.Label(
             root,
-            text="Drücken Sie START, um Ihre Geschichte aufzunehmen.",  # Anweisung
+            text="",  # Anweisung
             font=("Arial", 24),
-            bg="white",
+            bg="beige",
             fg="black",
             justify="center",
             wraplength=500
         )
-        start_label.place(relx=0.2, rely=0.425, anchor="center")
+        self.base_label.place(relx=0.5, rely=0.8, anchor="center", width=600, height=300)
 
-        stop_label = tk.Label(
-            root,
-            text="Drücken Sie STOP, um zu stoppen",  # Anweisung
-            font=("Arial", 24),
-            bg="white",
-            fg="black",
-            justify="center",
-            wraplength=500
-        )
-        stop_label.place(relx=0.2, rely=0.575, anchor="center")
-
-        next_label = tk.Label(
-            root,
-            text="Drücken Sie NÄCHSTE FRAGE, um zur nächsten Frage zu gelangen.",  # Anweisung
-            font=("Arial", 24),
-            bg="white",
-            fg="black",
-            justify="center",
-            wraplength=600
-        )
-        next_label.place(relx=0.8, rely=0.575, anchor="center")
-
-        previous_label = tk.Label(
-            root,
-            text="Drücken Sie VORHERIGE FRAGE, um zur vorherigen Frage zu gelangen.",  # Anweisung
-            font=("Arial", 24),
-            bg="white",
-            fg="black",
-            justify="center",
-            wraplength=600
-        )
-        previous_label.place(relx=0.8, rely=0.425, anchor="center")
-
-        quit_label = tk.Label(
-            root,
-            text="Drücken Sie AUSSCHALTEN, um wann anders weiterzumachen.",  # Anweisung
-            font=("Arial", 24),
-            bg="white",
-            fg="black",
-            justify="center",
-            wraplength=500
-        )
-        quit_label.place(relx=0.5, rely=0.8, anchor="center")
-
-        #Currently recording functionality
-        self.recording_label = tk.Label(
-            root,
-            text="Aufnahme läuft...",
-            font=("Arial", 24),
-            bg="white",
-            fg="red",
-            justify="center",
-            wraplength=500
-        )
         # Escape-Taste zum Beenden
         root.bind('<Escape>', lambda e: root.destroy())
     
-    def show_frame(self, frame):
+    def show_recording_frame(self):
         """
         shows Frame if visible.
         If already visible its not shown again.
         """
-        frame.place(relx=0.2, rely=0.5, anchor="center")
+        self.base_label.config(text="Aufnahme läuft...",
+            font=("Arial", 30),
+            bg="red",
+            fg="black",
+            justify="center",
+            wraplength=500,            
+            bd=2,
+            relief="groove")
+        self.root.update()
 
-    def hide_frame(self, frame):
+    def show_saved_frame(self):
         """
-        Hides Frame if visible.
+        changes base frame to saved frame.
         """
-        if frame.winfo_ismapped():
-            frame.place_forget()
+        self.base_label.config(text="Aufnahme gespeichert",
+            font=("Arial", 30),
+            bg="green",
+            fg="white",
+            justify="center",
+            wraplength=500,            
+            bd=2)
+        self.root.update()
+
+    def show_wait_frame(self):
+        """
+        changes base frame to saved frame.
+        """
+        self.base_label.config(text="Bitte warten",  # Anweisung
+            font=("Arial", 30),
+            bg="white",
+            fg="black",
+            justify="center",
+            wraplength=500,
+            bd=2,)
+        self.root.update()       
+
+    def hide_frame(self):
+        """
+        Changes back to invisible base frame
+        """
+        self.base_label.config(text="",bg="beige",bd=0)
+        self.root.update()
 
     # Methode zum Aktualisieren der Frage
     def update_question(self, new_question):
@@ -148,14 +101,18 @@ def main():
     # ui = ErzaehlomatUI(root)
     
     # Update questions sequentially with delays
-    ui.update_question("Was war Ihr schönstes Erlebnis?")
-    time.sleep(2)
     ui.update_question("Was war Ihr nächst schöneres Erlebnis?")
-    time.sleep(2)
+    time.sleep(1)
     ui.update_question("Wie alt sind Sie?")
-    time.sleep(2)
-    
-    # root.mainloop()
+    time.sleep(1)
+    ui.show_wait_frame()
+    time.sleep(1)
+    ui.show_recording_frame()
+    time.sleep(1)
+    ui.show_saved_frame()
+    time.sleep(1)
+    ui.hide_frame()
+    time.sleep(1)
 
 if __name__ == "__main__":
     main()
