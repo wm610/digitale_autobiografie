@@ -7,6 +7,7 @@ import tkinter as tk
 import setup
 import sounddevice as sd
 import numpy as np
+import speech_recognition as sr
 
 class Controller:
     def __init__(self):
@@ -41,7 +42,9 @@ class Controller:
         self.samplerate = 48000 #Sample rate in Hz, 44100 on Windows
         self.current_directory = Path.cwd()
         self.recordings_path = self.current_directory / "recordings"
-        self.textfiles_path = self.current_directory / "textfiles"    
+        self.textfiles_path = self.current_directory / "textfiles"
+        self.mic = sr.Microphone(self.samplerate)
+        self.recognizer = sr.Recognizer()
 
     def create_start_questions(self):
         return ["What is your name?", "How old are you?", "Where are you at home?"] # load questions from a file
@@ -65,18 +68,19 @@ class Controller:
         self.recording = True
         self.recordings_path.mkdir(exist_ok=True)
         self.ui.show_recording_frame()
-        with sd.InputStream(samplerate=self.samplerate, channels=1, callback=self.callback, dtype=np.int16):
+        with self.mic:
             while self.raspberry.should_record_run():
-                if self.raspberry.was_next_question_pressed():
+                try:
+                    self.recognizer.adjust_for_ambient_noise(self.mic, duration=1)
+                    self.audio_data = self.recognizer.listen(self.mic, timeout=10)
+                except self.raspberry.was_next_question_pressed():
                     self.current_question_index += 1
                     self.update_question_in_ui()
                     self.check_question_already_recorded()
-                    break
-                elif self.raspberry.was_previous_question_pressed():
+                except self.raspberry.was_previous_question_pressed():
                     if self.current_question_index > 0: self.current_question_index -= 1
                     self.update_question_in_ui()
-                    self.check_question_already_recorded()
-                    break        
+                    self.check_question_already_recorded()      
         self.stop_audio_recording(self.audio_data)
     
     def stop_audio_recording(self, audio_data):
