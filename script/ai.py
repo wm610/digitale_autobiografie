@@ -38,7 +38,6 @@ class Ai:
 
         # Send prompt to model
         model = "generate_question"
-        self.logger.info(f"Start generating new question")
         response = self.client.generate(model=model, prompt=prompt)
         return response.response
     
