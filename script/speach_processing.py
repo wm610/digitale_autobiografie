@@ -42,3 +42,12 @@ class SpeachProcessing:
         print(f"Using audio input device: {device_info['name']}")
         print(f"Sample rate: {device_info['default_samplerate']} Hz")
         print(f"Channels: {device_info['max_input_channels']}")
+
+
+def main():
+    sp : SpeachProcessing = SpeachProcessing()
+    audiofile_path = Path.cwd() / "test.wav"
+    sp.create_txt_file(audiofile_path, 42, "current_category")
+
+if __name__ == "__main__":
+    main()
