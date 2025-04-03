@@ -23,7 +23,7 @@ import tkinter as tk
 # import scipy.io.wavfile as wav
 
 class SpeachProcessing:
-    def __init__(self, arduino : Arduino, controller : Controller):
+    def __init__(self, arduino : Arduino, controller : Controller, ui: ErzaehlomatUI):
         self.THRESHOLD = 500
         self.CHUNK_SIZE = 1024
         self.FORMAT = pyaudio.paInt16
@@ -38,7 +38,7 @@ class SpeachProcessing:
         self.recordings_path = self.current_directory / "recordings"
         self.textfiles_path = self.current_directory / "textfiles"
 
-        self.ui = ErzaehlomatUI(tk.Tk())
+        self.ui = ui
 
     def create_wav_file(self, current_question_index, current_category: str) -> Path:
         """
@@ -206,7 +206,8 @@ if __name__ == '__main__':
     from controller import Controller
     controller = Controller()
     arduino = Arduino()
-    speach_processing = SpeachProcessing(arduino=arduino, controller=controller)
+    ui = ErzaehlomatUI(tk.Tk())
+    speach_processing = SpeachProcessing(arduino=arduino, controller=controller, ui=ui)
     print("please speak a word into the microphone")
     file = speach_processing.create_wav_file(42, "current_category")
     print("done recording written to: {file}")

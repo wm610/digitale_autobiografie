@@ -23,7 +23,7 @@ class Controller:
         self.logger.info(f"Start loading UI")
         self.ui = ErzaehlomatUI(tk.Tk())
         self.logger.info(f"Start loading Speach Processing")
-        self.speach_processing = SpeachProcessing(self.arduino, self)
+        self.speach_processing = SpeachProcessing(self.arduino, self, self.ui)
         self.logger.info(f"Start loading first AI")
         self.ai1 = Ai() # for summarising start questions to a profile
         self.logger.info(f"Start loading second AI")
