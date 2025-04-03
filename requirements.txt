@@ -3,3 +3,5 @@ faster-whisper
 ollama
 sounddevice
 scipy
+SpeechRecognition
+pyserial
