@@ -32,6 +32,8 @@ class SpeachProcessing:
         segments = self.model.transcribe(filepath_wav, beam_size=5, vad_filter=True)
         with open(textfilename, 'w', encoding='utf-8') as file:
             for segment in segments:
+                print(type(segment))
+                print(segment)
                 file.write(f"{segment.text}\n")
         return textfilename
     
