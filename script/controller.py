@@ -14,7 +14,7 @@ import speech_recognition as sr
 class Controller:
     def __init__(self):
         # TODO This should be in an env file
-        self.category_treshold = 3 # after this amount of questions the next category is 
+        self.category_treshold = 5 # after this amount of questions the next category is 
         self.categories=["Base","Childhood","Family","Job","Travel","Values"]
         
         self.logger = setup.get_logger()
@@ -51,7 +51,7 @@ class Controller:
         self.recognizer = sr.Recognizer()
 
     def create_start_questions(self):
-        return ["What hobbies do you have?", "How old are you?", "Where are you at home?"] # load questions from a file
+        return ["Wie heißt du?", "Wie alt bist du?", "Wo bist du geboren?", "Wo bist du Aufgewachsen?", "Wo bist du zu Hause?"]
 
     def check_question_already_recorded(self):
             #check if next question is already recorded

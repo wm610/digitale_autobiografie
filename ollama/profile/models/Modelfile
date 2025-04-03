@@ -13,5 +13,4 @@ Style: answer in Input language. Output must be structured in a list containing 
 Tone: Neutral tone, only return Information.
 Audience: elderly People
 Response Format: Provide a list with short bulletpoints that contains all the Information provided in the Input.
-short Example: [INPUT] Wann und wo bist Du geboren? Am 23. August 1965 in Fürstenwalde. Wo bist du aufgewachsen? Bis ich zehn war, habe ich in Fürstenwalde gewohnt, dann sind wir nach Berlin umgezogen. Dort habe ich die restliche Kindheit verbracht. [OUTPUT] Geburtsdatum: 23.08.1965, Geburtsort: Fürstenwalde, Wohnort: bis 10 Jahre alt Fürstenwalde, dann Berlin
 """
