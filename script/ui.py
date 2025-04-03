@@ -11,13 +11,13 @@ class ErzaehlomatUI:
         self.question_label = tk.Label(
             root,
             text="Hallo! Das ist der Erzählomat",  # Startfrage
-            font=("Arial", 40),  # Große Schrift
+            font=("Arial", 50),  # Große Schrift
             bg="beige",
             fg="black",
-            wraplength=900,
+            wraplength=1000,
             justify="center"
         )
-        self.question_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.question_label.place(relx=0.5, rely=0.4, anchor="center")
 
         # empty frame
         self.base_label = tk.Label(
