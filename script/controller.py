@@ -40,7 +40,7 @@ class Controller:
         self.category_question_counter = 0 # counts the questions per category
         self.current_category_index = 0
         self.amout_of_categories = len(self.categories)
-        self.recording = False
+        # self.recording = False
         self.audio_data = []
         self.samplerate = 48000 #Sample rate in Hz, 44100 on Windows
         self.current_directory = Path.cwd()

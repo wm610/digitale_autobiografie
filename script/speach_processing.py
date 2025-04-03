@@ -69,7 +69,7 @@ class SpeachProcessing:
                 text = self.recognizer.recognize_google(audio_data, language="de-DE")
                 with open(textfilename, "w") as file:
                     file.write(text)
-                print("Transcription saved to output.txt")
+                self.logger.info(f"Transcription saved to {textfilename}")
             except sr.UnknownValueError:
                 print("Could not understand the audio")
             except sr.RequestError:
