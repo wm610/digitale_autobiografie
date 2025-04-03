@@ -46,6 +46,15 @@ class Controller:
     def create_start_questions(self):
         return ["What is your name?", "How old are you?", "Where are you at home?"] # load questions from a file
 
+    def check_question_already_recorded(self):
+            #check if next question is already recorded
+        existing_files = list(self.recordings_path.glob(f"{self.current_question_index}_*.wav"))
+        if existing_files:
+            self.ui.show_saved_frame()
+        else:
+            self.ui.hide_frame()
+        #otherwise hide frame
+
     def callback(self, indata, frames, time, status): ##had no time thinking about what this does but we need it for recording
         if status:
             print(status)
@@ -55,15 +64,18 @@ class Controller:
         self.audio_data = []  # Reset data
         self.recording = True
         self.recordings_path.mkdir(exist_ok=True)
+        self.ui.show_recording_frame()
         with sd.InputStream(samplerate=self.samplerate, channels=1, callback=self.callback, dtype=np.int16):
             while self.raspberry.should_record_run():
                 if self.raspberry.was_next_question_pressed():
                     self.current_question_index += 1
                     self.update_question_in_ui()
+                    self.check_question_already_recorded()
                     break
                 elif self.raspberry.was_previous_question_pressed():
                     if self.current_question_index > 0: self.current_question_index -= 1
                     self.update_question_in_ui()
+                    self.check_question_already_recorded()
                     break        
         self.stop_audio_recording(self.audio_data)
     
@@ -71,10 +83,12 @@ class Controller:
         # store wav file
         if self.recording:
             self.recording = False
+            self.ui.show_wait_frame()
             filepath_wav : Path = self.speach_processing.create_wav_file(audio_data, self.current_question_index,self.category[self.current_category_index])
             filepath_txt : Path = self.speach_processing.create_txt_file(filepath_wav,self.current_question_index,self.category[self.current_category_index])
             self.answers_txt.append(filepath_txt)
             self.answers_wav.append(filepath_wav)
+            self.ui.show_saved_frame()
     
     def update_question_in_ui(self):
         """
@@ -83,20 +97,25 @@ class Controller:
         """
         if self.current_question_index == len(self.questions):
             lower_bound : int = len(self.profiles) * self.category_treshold
+            self.ui.show_wait_frame()
             new_generated_question = self.ai2.generate_new_question(self.profiles,
                                                                     self.questions[lower_bound:lower_bound+self.category_question_counter],
                                                                     self.answers_txt[lower_bound:lower_bound+self.category_question_counter],
                                                                     self.categories[self.current_category_index]) # only 
 
+            self.ui.hide_frame()
             self.questions.append(new_generated_question)
             self.category_question_counter += 1
             if self.category_question_counter == self.category_treshold:
                 # create new summary of the current category and append to profiles
+                self.ui.show_wait_frame()
                 self.ai1.generate_summary(self.questions[lower_bound:lower_bound+self.category_treshold], self.answers_txt[lower_bound:lower_bound:lower_bound+self.category_treshold])
+                self.ui.hide_frame()
                 self.category_question_counter = 0
                 self.current_category_index += 1    #TODO solve bug if you move back to last category
         self.logger.info(f"New question: {self.questions[self.current_question_index]}")
-        self.ui.update_question(self.questions[self.current_question_index]) 
+        self.ui.update_question(self.questions[self.current_question_index])
+        self.check_question_already_recorded()
 
     def execute_next_cmd(self):        
         self.raspberry.update_button_states()
@@ -105,18 +124,17 @@ class Controller:
         if self.raspberry.was_next_question_pressed():
             self.current_question_index += 1
             self.update_question_in_ui()
+            self.check_question_already_recorded()
         elif self.raspberry.was_previous_question_pressed():
             if self.current_question_index > 0:
                 self.current_question_index -= 1
                 self.update_question_in_ui()
+                self.check_question_already_recorded()
 
         # start the recording if the user wants to run it
         if self.raspberry.should_record_run():
             self.start_audio_recording()
         
-            
-
-
 
     def start(self):
             
