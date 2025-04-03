@@ -1,14 +1,13 @@
+import speech_recognition as sr
 from pathlib import Path
-from faster_whisper import WhisperModel
-import sounddevice as sd
 import numpy as np
+import sounddevice as sd
 import scipy.io.wavfile as wav
-
 
 class SpeachProcessing:
     def __init__(self):
-        self.model_size = "small"
-        self.model = WhisperModel(self.model_size, device="cpu", compute_type="float32")
+        self.recognizer = sr.Recognizer()
+
         self.current_directory = Path.cwd()
         self.recordings_path = self.current_directory / "recordings"
         self.textfiles_path = self.current_directory / "textfiles"
@@ -27,14 +26,21 @@ class SpeachProcessing:
         """
         take in audio data path, create transcription and return textfile path 
         """
-        self.textfiles_path.mkdir(exist_ok=True)
-        textfilename = self.textfiles_path / f"{current_question_index}_{current_category}.txt"
-        segments = self.model.transcribe(filepath_wav, beam_size=5, vad_filter=True)
-        with open(textfilename, 'w', encoding='utf-8') as file:
-            for segment in segments:
-                print(type(segment))
-                print(segment)
-                file.write(f"{segment.text}\n")
+        with sr.AudioFile(str(filepath_wav)) as source:
+            audio_data = self.recognizer.record(source)  # Read the audio file
+            try:
+                self.textfiles_path.mkdir(exist_ok=True)
+                textfilename = self.textfiles_path / f"{current_question_index}_{current_category}.txt"
+
+                text = self.recognizer.recognize_google(audio_data, language="de-DE")
+                with open(textfilename, "w") as file:
+                    file.write(text)
+                print("Transcription saved to output.txt")
+            except sr.UnknownValueError:
+                print("Could not understand the audio")
+            except sr.RequestError:
+                print("Error with the recognition service")
+
         return textfilename
     
     def audio_diagnostic_info(self):
