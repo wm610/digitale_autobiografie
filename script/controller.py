@@ -5,8 +5,8 @@ from ui import ErzaehlomatUI
 from pathlib import Path
 import tkinter as tk
 import setup
-import sounddevice as sd
-import numpy as np
+# import sounddevice as sd
+# import numpy as np
 import speech_recognition as sr
 
 class Controller:
@@ -17,16 +17,16 @@ class Controller:
         
         self.logger = setup.get_logger()
         
+        self.arduino = Arduino()
         self.logger.info(f"Start loading UI")
         self.ui = ErzaehlomatUI(tk.Tk())
-        self.speach_processing = SpeachProcessing()
+        self.speach_processing = SpeachProcessing(self.arduino)
         self.logger.info(f"Start loading first AI")
         self.ai1 = Ai() # for summarising start questions to a profile
         self.logger.info(f"Start loading second AI")
         self.ai2 = Ai() # for generating new questions
         self.logger.info(f"Start loading third AI")
         self.ai3 = Ai() # maybe not here needed here
-        self.arduino = Arduino()
 
         self.questions : list[str] = self.create_start_questions()
         self.answers_txt : list[Path] = []
@@ -59,10 +59,10 @@ class Controller:
             self.ui.hide_frame()
         #otherwise hide frame
 
-    def callback(self, indata, frames, time, status): ##had no time thinking about what this does but we need it for recording
-        if status:
-            print(status)
-        self.audio_data.append(indata.copy())
+    # def callback(self, indata, frames, time, status): ##had no time thinking about what this does but we need it for recording
+    #     if status:
+    #         print(status)
+    #     self.audio_data.append(indata.copy())
         
     def start_audio_recording(self):
         self.audio_data = []  # Reset data
