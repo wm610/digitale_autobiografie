@@ -212,7 +212,7 @@ class SpeachProcessing:
 
         # Optional: select a specific voice (e.g., male or female)
         voices = self.engine.getProperty('voices')
-        self.engine.setProperty('voice', voices[0].id)  # Change index to select another voice
+        self.engine.setProperty('voice', voices[16].id)  # Change index to select another voice
 
         # Provide the text to be spoken
         self.engine.say(question)

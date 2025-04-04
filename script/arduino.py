@@ -32,6 +32,7 @@ class Arduino:
     def update_button_states(self):
         self.logger.debug(f"{self.current_button_state}")
         try:
+            # if self.ser and self.ser.is_open and self.ser.in_waiting > 0:
             if self.ser.in_waiting > 0:
                 self.current_button_state = self.ser.read(self.ser.in_waiting).decode('utf-8').rstrip()
         except KeyboardInterrupt:
