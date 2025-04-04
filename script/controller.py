@@ -119,6 +119,8 @@ class Controller:
                 self.current_question_index -= 1
                 self.update_question_in_ui(True)
                 #self.check_question_already_recorded()
+        elif self.arduino.was_speak_pressed():
+            self.speach_processing.say_out_loud(question=self.questions[self.current_question_index])
 
         # start the recording if the user wants to run it
         if self.arduino.should_record_run():

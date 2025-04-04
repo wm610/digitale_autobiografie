@@ -17,6 +17,7 @@ import setup
 
 from ui import ErzaehlomatUI
 import tkinter as tk
+import pyttsx3
 
 # from pathlib import Path
 # import numpy as np
@@ -39,6 +40,8 @@ class SpeachProcessing:
         self.textfiles_path = self.current_directory / "textfiles"
 
         self.ui = ui
+
+        self.engine = pyttsx3.init()
 
     def create_wav_file(self, current_question_index, current_category: str) -> Path:
         """
@@ -201,6 +204,21 @@ class SpeachProcessing:
         r = self.add_silence(r, 0.5)
         self.ui.show_saved_frame()
         return sample_width, r
+    
+    def say_out_loud(self, question :str):
+        # Optional: adjust speech rate and volume
+        self.engine.setProperty('rate', 150)      # Lower values slow down the speech
+        self.engine.setProperty('volume', 1.0)      # Volume level between 0.0 and 1.0
+
+        # Optional: select a specific voice (e.g., male or female)
+        voices = self.engine.getProperty('voices')
+        self.engine.setProperty('voice', voices[0].id)  # Change index to select another voice
+
+        # Provide the text to be spoken
+        self.engine.say(question)
+
+        # Process and play the speech
+        self.engine.runAndWait()
 
 if __name__ == '__main__':
     from controller import Controller
